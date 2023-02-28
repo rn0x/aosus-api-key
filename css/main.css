@@ -283,14 +283,12 @@ footer {
     padding: 5px;
     width: 100%;
     bottom: 0;
-    background-color: #f2f2f2;
     direction: ltr;
     text-align: center;
     font-size: 12px;
     border-top: 1px solid #e7e7e7;
     margin-bottom: 0px;
-    margin-top: 0px;
-    position: absolute;
+    margin-top: 30px;
 }
 
 @media (max-width: 600px) {
