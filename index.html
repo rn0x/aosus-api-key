@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'>
+    <meta property="og:locale" content="ar_AR">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="مولد مفاتيح Api - مجتمع أسس"> <!-- عنوان الصفحه -->
+    <meta property="og:site_name" content="مجتمع أسس"> <!-- إسم الموقع -->
+    <meta property="og:image" content="/files/image/preview.png" /> <!-- صورة المعاينة للصفحة -->
+    <meta property="og:description" content="مولد مفاتيح Api لـ Discourse" /> <!-- وصف الصفحة -->
+    <meta name="description" content="مولد مفاتيح Api لـ Discourse" /> <!-- وصف الصفحة -->
+    <title>مولد مفاتيح Api - مجتمع أسس</title> <!-- إسم الموقع -->
+    <link rel="stylesheet" href="./css/var.css" id="var"> <!-- ملف متغيرات الـ css -->
+    <link rel="stylesheet" href="./css/main.css"> <!-- ملف css الأساسي -->
+    <link rel="icon" href="./icon/icon.png" type="image/png"> <!-- ايقونة المتصفح -->
+    <script src="./jsencrypt.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+    <header>
+        <img src="./icon/aosus-w-logo.png" alt="logo" id="logo">
+        <img src="./icon/menu.png" alt="menu" id="menu">
+    </header>
+
+    <div id="menu_bar">
+
+        <img src="./icon/menu.png" alt="menu" id="menu_close">
+        <ul>
+            <li>
+                <a href="https://aosus.org/">الرئيسية</a>
+            </li>
+
+            <li>
+                <a href="https://discourse.aosus.org/">المجتمع</a>
+            </li>
+
+            <li>
+                <a href="https://dictionary.aosus.org/">المعجم</a>
+            </li>
+
+            <li>
+                <a href="https://aosus.org/services">خِدْمَات</a>
+            </li>
+
+            <li>
+                <a href="https://aosus.org/blog">المدونة</a>
+            </li>
+
+            <li>
+                <a href="https://aosus.org/contact-us">اتصل بنا</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div id="content">
+
+        <!-- ================ محتوى الصفحة =============== -->
+
+        <div id="part1">
+            <h2 id="title">
+                مولد مفاتيح Api
+            </h2>
+
+            <p id="description">
+                طريقة سهلة لإنشاء مفاتيح Api لمجتمع أسس. كل ما عليك هو الضغط على زر إنشاء.
+            </p>
+
+            <button id="crate_bt">
+                إنشاء!
+            </button>
+        </div>
+
+
+        <div id="part2">
+
+            <p id="paste">
+                قم بلصق المفتاح المشفر المعروض على الموقع, ثم قم بالضغط على Api Key.
+            </p>
+
+            <input type="text" id="encrypt" placeholder="قم بلصق المفتاح هنا">
+
+            <p id="error">
+                تأكد من كتابة المفتاح المشفر المعروض على الموقع
+            </p>
+            <button id="api_bt">
+                Api Key
+            </button>
+        </div>
+
+        <div id="part3">
+
+            <h3>
+                مفتاح api الخاص بك
+            </h3>
+
+            <p id="apikey"></p>
+
+            <p id="copy_text">
+                تم النسخ
+            </p>
+
+            <div id="bt">
+
+                <button id="copy">
+                    نسخ
+                </button>
+
+                <button id="home">
+                    العودة
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ================ محتوى الصفحة =============== -->
+
+    </div>
+
+    <footer>
+        <p>Copyright © 2023 Aosus.</p>
+    </footer>
+
+</body>
+
+<script>
+
+    let menu = document.getElementById('menu');
+    let menu_close = document.getElementById('menu_close');
+    let menu_bar = document.getElementById('menu_bar');
+
+    menu.addEventListener("click", e => {
+        menu_bar.style.display = "block";
+    });
+
+    menu_close.addEventListener("click", e => {
+        menu_bar.style.display = "none";
+    });
+
+
+    // generate api key 
+
+    let crate_bt = document.getElementById('crate_bt');
+    let part1 = document.getElementById('part1');
+    let part2 = document.getElementById('part2');
+    let part3 = document.getElementById('part3');
+    let encrypt = document.getElementById('encrypt');
+    let api_bt = document.getElementById('api_bt');
+    let error = document.getElementById('error');
+    let apikey = document.getElementById('apikey');
+    let copy_text = document.getElementById('copy_text');
+    let copy = document.getElementById('copy');
+    let home = document.getElementById('home');
+    let crypt = new JSEncrypt();
+    let PublicKey = crypt.getPublicKey();
+    let PrivateKey = crypt.getPrivateKey();
+    crypt.setPrivateKey(PrivateKey);
+
+
+    crate_bt.addEventListener("click", e => {
+        part1.style.display = "none";
+        part2.style.display = "block";
+        encrypt.value = ''
+        window.open(buildUrl(PublicKey), "_blank");
+    });
+
+    let decrypt = ''
+    api_bt.addEventListener("click", e => {
+        let value = encrypt.value.trim();
+
+        if (value.length !== 0) {
+
+            decrypt = crypt.decrypt(value);
+
+            // console.log(encrypt.value);
+
+            if (decrypt) {
+                part2.style.display = "none";
+                part3.style.display = "block";
+                apikey.innerText = JSON.parse(decrypt).key;
+            }
+
+            else {
+                error.style.display = "block";
+                setTimeout(() => {
+                    error.style.display = "none";
+                }, 3000);
+            }
+        }
+
+        else {
+            error.style.display = "block";
+            setTimeout(() => {
+                error.style.display = "none";
+            }, 3000);
+        }
+
+    });
+
+    copy.addEventListener("click", e => {
+        navigator.clipboard.writeText(apikey.innerText);
+        copy_text.style.display = "block";
+        setTimeout(() => {
+            copy_text.style.display = "none";
+        }, 3000);
+    });
+
+
+    home.addEventListener("click", e => {
+        encrypt.value = ''
+        window.location.href = window.location.href;
+    });
+
+    // Function
+
+    function buildUrl(PublicKey) {
+
+        let url = new URL('https://discourse.aosus.org/user-api-key/new')
+        url.searchParams.append('application_name', 'مولد مفاتيح Api')
+        url.searchParams.append('client_id', 'Aosus')
+        url.searchParams.append('scopes', ["write", "read"])
+        url.searchParams.append('public_key', PublicKey)
+        url.searchParams.append('nonce', '1')
+        return url.href
+
+    }
+
+</script>
+
+</html>
